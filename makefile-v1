@@ -1,0 +1,23 @@
+CC = gcc
+CFLAGS = -Wall -Iinclude
+
+SRCS = src/add.c src/sub.c
+OBJS = $(SRCS:.c=.o)
+STATIC_LIB = lib/libcal.a
+EXEC = main
+OBJ_DIR = lib
+
+$(OBJ_DIR)/%.o: src/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(STATIC_LIB): $(OBJS)
+	ar rcs $@ $(OBJS)
+
+$(EXEC): $(STATIC_LIB) main.c
+	$(CC) $(CFLAGS) main.c -L$(OBJ_DIR) -lcal -o $@
+
+.PHONY: clean
+clean:
+	rm -f $(OBJS) $(STATIC_LIB) $(EXEC)
+
+all: $(EXEC)
